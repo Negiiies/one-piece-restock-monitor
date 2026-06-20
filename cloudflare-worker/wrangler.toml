@@ -1,0 +1,17 @@
+name = "op-restock-monitor"
+main = "src/index.js"
+compatibility_date = "2026-06-01"
+account_id = "d353a35cfc46be576cf4a12e4fe48ed2"
+
+# Worker purement cron : pas d'URL publique workers.dev
+workers_dev = false
+
+# Cron Trigger : toutes les minutes (fiable, planifie sur l'edge Cloudflare)
+[triggers]
+crons = ["* * * * *"]
+
+# Stockage de l'etat (dispo/prix du dernier check). L'id est rempli apres
+# la creation du namespace : `wrangler kv namespace create STATE_KV`
+[[kv_namespaces]]
+binding = "STATE_KV"
+id = "16ffe8c9679b489d89ff77d551321cbb"

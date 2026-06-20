@@ -8,3 +8,7 @@ state.json.tmp
 
 # Artefacts de session Claude Code (ne pas committer)
 post-log.json
+
+# Cloudflare Worker / Node
+node_modules/
+.wrangler/
