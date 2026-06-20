@@ -144,6 +144,9 @@ async function runCheck(env) {
     }
   }
 
+  // Rapport quotidien de bonne sante (preuve positive + canari de livraison Telegram)
+  await maybeSendDailyDigest(env, state);
+
   console.log("[done] " + products.length + " produits, " + alerts + " alerte(s), changed=" + changed);
   return { ok: true, products: products.length, alerts, changed };
 }
@@ -261,4 +264,27 @@ function escapeHtml(s) {
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
+}
+
+// Envoie une fois par jour un message "tout va bien" (vers 07:00 UTC ~ 9h Paris).
+// Sert de preuve positive ET de canari : si Telegram casse, ce message n'arrive plus.
+// Ecrit dans KV au plus une fois par jour (respecte la limite gratuite).
+const DIGEST_HOUR_UTC = 7;
+async function maybeSendDailyDigest(env, state) {
+  const now = new Date();
+  if (now.getUTCHours() !== DIGEST_HOUR_UTC) return;
+  const today = now.toISOString().slice(0, 10); // "YYYY-MM-DD"
+  if (state.last_digest_date === today) return;
+
+  const ok = await tg(env, "sendMessage", {
+    text:
+      "🟢 <b>Surveillance active</b>\n" +
+      "Le moniteur One Piece fonctionne, dernière vérification réussie. " +
+      "Aucune action requise de ta part.",
+    disable_web_page_preview: true,
+  });
+  if (ok) {
+    state.last_digest_date = today;
+    await env.STATE_KV.put(STATE_KEY, JSON.stringify(state));
+  }
 }
