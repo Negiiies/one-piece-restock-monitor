@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+*.tmp
+state.json.tmp
+
+# Artefacts de session Claude Code (ne pas committer)
+post-log.json
