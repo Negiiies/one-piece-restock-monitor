@@ -38,7 +38,7 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           HEALTHCHECK_URL: ${{ secrets.HEALTHCHECK_URL }}
           POLL_INTERVAL: "60"
-          LOOP_DURATION: "240"
+          LOOP_DURATION: "280"
         run: python monitor.py
 
       - name: Persist state
